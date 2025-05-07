@@ -14,6 +14,34 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
         [[-50, 360], [640, 50], [1180, 360], [640, 670], [50, 360], [640, 50], [1180, 360], [640, 670], [-50, 360]],
         [[1330, 360], [640, 50], [50, 360], [640, 670], [1180, 360], [640, 50], [50, 360], [640, 670], [1330, 360]],
     ]
+    //canviem els paths per a que vinguen de totes direccions, no nomes de costat, hi han 0,7 opcions
+    paths = [
+    // de dalt cap al centre
+    [[640, -100], [640, 360]],
+
+    // de baix cap al centre
+    [[640, 820], [640, 360]],
+
+    // de l'esquerra cap al centre
+    [[-100, 360], [640, 360]],
+
+    // de la dreta cap al centre
+    [[1380, 360], [640, 360]],
+
+    // de la dalt esquerra  al centre
+    [[-100, -100], [640, 360]],
+
+    // de la dalt dreta  al centre
+    [[1380, -100], [640, 360]],
+
+    // de la baix esquerra  al centre
+    [[-100, 820], [640, 360]],
+
+    // de la baix dreta  al centre
+    [[1380, 820], [640, 360]],
+    ];
+
+
 
     constructor(scene, shipId, pathId, speed, power) {
         const startingId = 12;
@@ -47,7 +75,7 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
         // update firing interval
         if (this.fireCounter > 0) this.fireCounter--;
         else {
-            this.fire();
+            //this.fire();
         }
     }
 

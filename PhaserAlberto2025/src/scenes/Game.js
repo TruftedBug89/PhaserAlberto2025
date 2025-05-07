@@ -26,7 +26,8 @@ export class Game extends Phaser.Scene {
     }
 
     update() {
-        this.updateMap();
+        //deshabilitem aixo per a que sigue una pantalla sense
+        //this.updateMap();
 
         if (!this.gameStarted) return;
 
@@ -201,7 +202,8 @@ export class Game extends Phaser.Scene {
         const randomId = Phaser.Math.RND.between(0, 11); // id to choose image in tiles.png
         const randomCount = Phaser.Math.RND.between(5, 15); // number of enemies to spawn
         const randomInterval = Phaser.Math.RND.between(8, 12) * 100; // delay between spawning of each enemy
-        const randomPath = Phaser.Math.RND.between(0, 3); // choose a path, a group follows the same path
+        //const randomPath = Phaser.Math.RND.between(0, 3); // choose a path, a group follows the same path
+        const randomPath = Phaser.Math.RND.between(0, 7); // canviem aixo a 0,7 perque a EnemyFlying.js hem canviat a 7 paths
         const randomPower = Phaser.Math.RND.between(1, 4); // strength of the enemy to determine damage to inflict and selecting bullet image
         const randomSpeed = Phaser.Math.RND.realInRange(0.0001, 0.001); // increment of pathSpeed in enemy
 
