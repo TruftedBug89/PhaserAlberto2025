@@ -14,7 +14,9 @@ export class Game extends Phaser.Scene {
     constructor() {
         super('Game');
     }
-
+    preload(){
+        this.load.image('titleimg', 'assets/titleimg.png');
+    }
     create() {
         this.initVariables();
         this.initGameUi();
@@ -60,7 +62,7 @@ export class Game extends Phaser.Scene {
 
     initGameUi() {
         // Create tutorial text
-        this.tutorialText = this.add.text(this.centreX, this.centreY, 'Apreta espai per començar!', {
+        this.tutorialText = this.add.text(this.centreX, this.centreY+200, 'Apreta espai per començar!', {
             fontFamily: 'Arial Black', fontSize: 42, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
@@ -84,6 +86,15 @@ export class Game extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(100)
             .setVisible(false);
+
+        this.titleimage = this.add.image(20, 20, 'titleimg');  // l'he precarregat manualment per aquesta escena ja que nomes cal aquí
+
+        this.titleimage.setOrigin(0, 0);
+        this.titleimage.setDepth(100);
+        this.titleimage.setScale(0.5);
+
+        
+
     }
 
     initAnimations() {
@@ -124,6 +135,7 @@ export class Game extends Phaser.Scene {
 
         // check for spacebar press only once
         this.cursors.space.once('down', (key, event) => {
+            this.titleimage.setVisible(false);
             this.startGame();
         });
     }
