@@ -178,8 +178,9 @@ export class Game extends Phaser.Scene {
         this.addFlyingGroup();
     }
 
-    fireBullet(x, y) {
-        const bullet = new PlayerBullet(this, x, y);
+    fireBullet(x, y,direccio) {
+        //afegim direccio
+        const bullet = new PlayerBullet(this, x, y, direccio);
         this.playerBulletGroup.add(bullet);
     }
 

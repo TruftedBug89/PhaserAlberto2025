@@ -54,7 +54,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.fireCounter = this.fireRate;
 
-        this.scene.fireBullet(this.x, this.y);
+        //afegim el mouse per poder apuntar
+        const mouse = this.scene.input.activePointer;
+        
+        const objectiu = new Phaser.Math.Vector2(mouse.worldX, mouse.worldY);
+        const origen = new Phaser.Math.Vector2(this.x, this.y);
+        const vectordedireccio = objectiu.subtract(origen).normalize();
+
+        this.scene.fireBullet(this.x, this.y, vectordedireccio);
     }
 
     hit(damage) {
