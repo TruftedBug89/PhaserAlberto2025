@@ -31,11 +31,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
     checkInput() {
         const cursors = this.scene.cursors; // get cursors object from Game scene
-        const leftKey = cursors.left.isDown;
-        const rightKey = cursors.right.isDown;
-        const upKey = cursors.up.isDown;
-        const downKey = cursors.down.isDown;
-        const spaceKey = cursors.space.isDown;
+        const mouse = this.scene.input.activePointer;
+
+        //afegim wasd 
+        const leftKey = cursors.left.isDown || cursors.a.isDown;
+        const rightKey = cursors.right.isDown || cursors.d.isDown;
+        const upKey = cursors.up.isDown || cursors.w.isDown;
+        const downKey = cursors.down.isDown || cursors.s.isDown;
+        const spaceKey = cursors.space.isDown || mouse.isDown;
 
         const moveDirection = { x: 0, y: 0 }; // default move direction
 
@@ -56,7 +59,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         //afegim el mouse per poder apuntar
         const mouse = this.scene.input.activePointer;
-        
+
         const objectiu = new Phaser.Math.Vector2(mouse.worldX, mouse.worldY);
         const origen = new Phaser.Math.Vector2(this.x, this.y);
         const vectordedireccio = objectiu.subtract(origen).normalize();

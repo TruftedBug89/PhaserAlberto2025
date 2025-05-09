@@ -110,7 +110,17 @@ export class Game extends Phaser.Scene {
     }
 
     initInput() {
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.addKeys({
+            up: Phaser.Input.Keyboard.KeyCodes.UP,
+            down: Phaser.Input.Keyboard.KeyCodes.DOWN,
+            left: Phaser.Input.Keyboard.KeyCodes.LEFT,
+            right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+            space: Phaser.Input.Keyboard.KeyCodes.SPACE,
+            w: Phaser.Input.Keyboard.KeyCodes.W,
+            a: Phaser.Input.Keyboard.KeyCodes.A,
+            s: Phaser.Input.Keyboard.KeyCodes.S,
+            d: Phaser.Input.Keyboard.KeyCodes.D,
+        });
 
         // check for spacebar press only once
         this.cursors.space.once('down', (key, event) => {
