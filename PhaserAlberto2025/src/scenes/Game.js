@@ -60,7 +60,7 @@ export class Game extends Phaser.Scene {
 
     initGameUi() {
         // Create tutorial text
-        this.tutorialText = this.add.text(this.centreX, this.centreY, 'Tap to shoot!', {
+        this.tutorialText = this.add.text(this.centreX, this.centreY, 'Apreta espai per començar!', {
             fontFamily: 'Arial Black', fontSize: 42, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
@@ -69,14 +69,14 @@ export class Game extends Phaser.Scene {
             .setDepth(100);
 
         // Create score text
-        this.scoreText = this.add.text(20, 20, 'Score: 0', {
+        this.scoreText = this.add.text(20, 20, 'Puntuació: 0', {
             fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
         })
             .setDepth(100);
 
         // Create game over text
-        this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Game Over', {
+        this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Has mort', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
@@ -258,7 +258,7 @@ export class Game extends Phaser.Scene {
 
     updateScore(points) {
         this.score += points;
-        this.scoreText.setText(`Score: ${this.score}`);
+        this.scoreText.setText(`Puntuació: ${this.score}`);
     }
 
     GameOver() {

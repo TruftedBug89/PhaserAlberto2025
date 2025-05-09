@@ -6,7 +6,7 @@ export class GameOver extends Phaser.Scene {
     create() {
         this.background1 = this.add.image(0, 0, 'background').setOrigin(0);
 
-        this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Game Over', {
+        this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Has mort', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
