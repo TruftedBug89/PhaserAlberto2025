@@ -16,6 +16,8 @@ export class Game extends Phaser.Scene {
     }
     preload(){
         this.load.image('titleimg', 'assets/titleimg.png');
+        this.load.image('background', 'assets/startbg.png');
+    
     }
     create() {
         this.initVariables();
@@ -61,6 +63,8 @@ export class Game extends Phaser.Scene {
     }
 
     initGameUi() {
+        this.background1 = this.add.image(0, 0, 'background').setOrigin(0).setDepth(100).setScale(1.5);
+
         // Create tutorial text
         this.tutorialText = this.add.text(this.centreX, this.centreY+200, 'Apreta espai per començar!', {
             fontFamily: 'Arial Black', fontSize: 42, color: '#ffffff',
@@ -78,6 +82,8 @@ export class Game extends Phaser.Scene {
             .setDepth(100);
 
         // Create game over text
+        //no cal, canviem d'escena
+        /*
         this.gameOverText = this.add.text(this.scale.width * 0.5, this.scale.height * 0.5, 'Has mort', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
@@ -86,7 +92,7 @@ export class Game extends Phaser.Scene {
             .setOrigin(0.5)
             .setDepth(100)
             .setVisible(false);
-
+*/
         this.titleimage = this.add.image(20, 20, 'titleimg');  // l'he precarregat manualment per aquesta escena ja que nomes cal aquí
 
         this.titleimage.setOrigin(0, 0);
@@ -135,8 +141,12 @@ export class Game extends Phaser.Scene {
 
         // check for spacebar press only once
         this.cursors.space.once('down', (key, event) => {
+            this.gameStarted = true;
+            this.score = 0; // Reset puntuació
+            this.updateScore(0); // Update puntuació
             this.titleimage.setVisible(false);
             this.startGame();
+            
         });
     }
 
@@ -195,8 +205,20 @@ export class Game extends Phaser.Scene {
     }
 
     startGame() {
+        // Optional: Reset player state (e.g., health, position) if you have a method for it
+        // if (this.player && typeof this.player.resetState === 'function') {
+        //     this.player.resetState();
+        // }
+
+        // Optional: Clear existing enemies and bullets if restarting
+        // if (this.enemyGroup) this.enemyGroup.clear(true, true);
+        // if (this.enemyBulletGroup) this.enemyBulletGroup.clear(true, true);
+        // if (this.playerBulletGroup) this.playerBulletGroup.clear(true, true);
+
         this.gameStarted = true;
         this.tutorialText.setVisible(false);
+        this.background1.setVisible(false);
+        
         this.addFlyingGroup();
     }
 
@@ -213,10 +235,6 @@ export class Game extends Phaser.Scene {
     fireEnemyBullet(x, y, power) {
         const bullet = new EnemyBullet(this, x, y, power);
         this.enemyBulletGroup.add(bullet);
-    }
-
-    removeEnemyBullet(bullet) {
-        this.playerBulletGroup.remove(bullet, true, true);
     }
 
     // add a group of flying enemies
@@ -275,6 +293,6 @@ export class Game extends Phaser.Scene {
 
     GameOver() {
         this.gameStarted = false;
-        this.gameOverText.setVisible(true);
+        this.scene.start('GameOver', { score: this.score }); // Add this line
     }
 }
