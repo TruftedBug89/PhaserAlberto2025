@@ -63,14 +63,15 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
-
+        //els zombies van cap al jugador no al path
+        this.scene.physics.moveToObject(this, this.player, this.moveSpeed);
         if (this.pathIndex > 1) return; // stop updating if reached end of path
+     
+        //this.path.getPoint(this.pathIndex, this.pathVector); // get current coordinate based on percentage moved
 
-        this.path.getPoint(this.pathIndex, this.pathVector); // get current coordinate based on percentage moved
+        //this.setPosition(this.pathVector.x, this.pathVector.y); // set position of this enemy
 
-        this.setPosition(this.pathVector.x, this.pathVector.y); // set position of this enemy
-
-        this.pathIndex += this.pathSpeed; // increment percentage moved by pathSpeed
+        //this.pathIndex += this.pathSpeed; // increment percentage moved by pathSpeed
 
         if (this.pathIndex > 1) this.die();
         this.lookatplayer()

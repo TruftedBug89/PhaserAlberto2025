@@ -4,7 +4,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     velocityIncrement = 50;
     velocityMax = 500;
     drag = 1000;
-    fireRate = 10;
+    fireRate = 70;
     fireCounter = 0;
     health = 1;
 
@@ -30,7 +30,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     checkInput() {
-        const cursors = this.scene.cursors; // get cursors object from Game scene
+        const cursors = this.scene.cursors; // get cursors object from Game scenea
         const mouse = this.scene.input.activePointer;
 
         //afegim wasd 
@@ -42,10 +42,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite {
 
         const moveDirection = { x: 0, y: 0 }; // default move direction
 
-        if (leftKey) moveDirection.x--;
-        if (rightKey) moveDirection.x++;
-        if (upKey) moveDirection.y--;
-        if (downKey) moveDirection.y++;
+        if (leftKey) {moveDirection.x--; this.setRotation(-Math.PI / 2);}
+        if (rightKey) {moveDirection.x++; this.setRotation(Math.PI / 2)}
+        if (upKey) {moveDirection.y--; this.setRotation(0)}
+        if (downKey) {moveDirection.y++;this.setRotation(Math.PI)}
         if (spaceKey) this.fire();
 
         this.body.velocity.x += moveDirection.x * this.velocityIncrement; // increase horizontal velocity

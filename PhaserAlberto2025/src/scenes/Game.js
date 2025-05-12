@@ -21,6 +21,7 @@ export class Game extends Phaser.Scene {
         this.load.image('titleimg', 'assets/titleimg.png');
         this.load.image('background', 'assets/startbg.png');
         this.load.image('tutorialimg','assets/tutorialimg.png');
+        this.load.audio('audiobg','assets/music.mp3')
     
     }
     create() {
@@ -31,6 +32,12 @@ export class Game extends Phaser.Scene {
         this.initInput();
         this.initPhysics();
         this.initMap();
+        this.bgMusic = this.sound.add('audiobg', {
+            volume: 0.5,  // adjust volume 0 to 1
+            loop: true    // loop music
+        });
+
+         this.bgMusic.play();
     }
 
     update() {
@@ -46,6 +53,7 @@ export class Game extends Phaser.Scene {
 
     initVariables() {
         this.score = 0;
+        this.hp = 3;
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
 
@@ -81,6 +89,12 @@ export class Game extends Phaser.Scene {
         // Create score text
         this.scoreText = this.add.text(20, 20, 'Puntuació: 0', {
             fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+        })
+            .setDepth(100).setVisible(false);
+
+        this.livesText = this.add.text(500, 20, '❤️❤️❤️', {
+            fontFamily: 'Arial Black', fontSize: 40, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
         })
             .setDepth(100).setVisible(false);
@@ -131,7 +145,7 @@ export class Game extends Phaser.Scene {
     }
 
     initPlayer() {
-        this.player = new Player(this, this.centreX, this.scale.height - 100, 8);
+        this.player = new Player(this, this.centreX, this.scale.height/2, 8);
     }
 
     initInput() {
@@ -155,6 +169,7 @@ export class Game extends Phaser.Scene {
             this.titleimage.setVisible(false);
             this.tutorialimg.setVisible(false);
             this.scoreText.setVisible(true);
+            this.livesText.setVisible(true);
             this.startGame();
             
         });
@@ -277,28 +292,45 @@ export class Game extends Phaser.Scene {
     removeEnemy(enemy) {
         this.enemyGroup.remove(enemy, true, true);
     }
-
+    removeEnemyAll() {
+       this.enemyGroup.clear(true, true);
+ 
+    }
     addExplosion(x, y) {
         new Explosion(this, x, y);
     }
 
     hitPlayer(player, obstacle) {
+        obstacle.die()
         this.addExplosion(player.x, player.y);
-        player.hit(obstacle.getPower());
-        obstacle.die();
-
-        this.GameOver();
+        this.removeEnemyAll()
+        this.player.x = this.centreX;
+        this.player.y = this.scale.height/2;
+        //fem que les vides reseteen la partida
+        if (this.hp > 1){
+            this.hp--;
+            this.updateLives()
+        }
+        else{
+            player.hit(obstacle.getPower());
+            this.bgMusic.stop();
+            this.GameOver();
+        }
+        
     }
 
     hitEnemy(bullet, enemy) {
-        this.updateScore(10);
+        this.updateScore(13);
         bullet.remove();
         enemy.hit(bullet.getPower());
     }
 
     updateScore(points) {
         this.score += points;
-        this.scoreText.setText(`Puntuació: ${this.score}`);
+        this.scoreText.setText(`Puntuació: ${this.score}/1000`);
+    }
+    updateLives() {
+          this.livesText.setText("❤️".repeat(this.hp));
     }
 
     GameOver() {
