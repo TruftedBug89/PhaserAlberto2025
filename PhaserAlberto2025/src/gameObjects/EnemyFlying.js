@@ -8,12 +8,13 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
     power = 1; // enemy strength
 
     // path coordinates for enemy to follow
+    /*
     paths = [
         [[200, -50], [1080, 160], [200, 340], [1080, 520], [200, 700], [1080, 780]],
         [[-50, 200], [1330, 200], [1330, 400], [-50, 400], [-50, 600], [1330, 600]],
         [[-50, 360], [640, 50], [1180, 360], [640, 670], [50, 360], [640, 50], [1180, 360], [640, 670], [-50, 360]],
         [[1330, 360], [640, 50], [50, 360], [640, 670], [1180, 360], [640, 50], [50, 360], [640, 670], [1330, 360]],
-    ]
+    ]*/
     //canviem els paths per a que vinguen de totes direccions, no nomes de costat, hi han 0,7 opcions
     paths = [
     // de dalt cap al centre
@@ -43,7 +44,7 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
 
 
 
-    constructor(scene, shipId, pathId, speed, power) {
+    constructor(scene, shipId, pathId, speed, power, player) {
         const startingId = 12;
         super(scene, 500, 500, ASSETS.spritesheet.ships.key, startingId + shipId);
 
@@ -55,6 +56,7 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
         this.setFlipY(true); // flip image vertically
         this.setDepth(10);
         this.scene = scene;
+        this.player = player;
 
         this.initPath(pathId, speed); // choose path to follow
     }
@@ -71,14 +73,21 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
         this.pathIndex += this.pathSpeed; // increment percentage moved by pathSpeed
 
         if (this.pathIndex > 1) this.die();
-
+        this.lookatplayer()
         // update firing interval
         if (this.fireCounter > 0) this.fireCounter--;
         else {
             //this.fire();
         }
     }
-
+    lookatplayer(){
+        const angle = Phaser.Math.Angle.Between(
+            this.x, this.y,
+            this.player.x, this.player.y
+        );
+        //  +Math.PI per a girar-ho 180 graus (bug)
+        this.setRotation(angle + Math.PI / 2 + Math.PI);
+    }
     hit(damage) {
         this.health -= damage;
 

@@ -14,9 +14,13 @@ export class Game extends Phaser.Scene {
     constructor() {
         super('Game');
     }
+    init(data){
+        //fer que si la puntuació es x anar al segon mon TODO
+    }
     preload(){
         this.load.image('titleimg', 'assets/titleimg.png');
         this.load.image('background', 'assets/startbg.png');
+        this.load.image('tutorialimg','assets/tutorialimg.png');
     
     }
     create() {
@@ -79,7 +83,7 @@ export class Game extends Phaser.Scene {
             fontFamily: 'Arial Black', fontSize: 28, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
         })
-            .setDepth(100);
+            .setDepth(100).setVisible(false);
 
         // Create game over text
         //no cal, canviem d'escena
@@ -99,6 +103,10 @@ export class Game extends Phaser.Scene {
         this.titleimage.setDepth(100);
         this.titleimage.setScale(0.5);
 
+        this.tutorialimg = this.add.image(750, 70, 'tutorialimg');  
+        this.tutorialimg.setOrigin(0, 0);
+        this.tutorialimg.setDepth(100);
+        this.tutorialimg.setScale(0.5);
         
 
     }
@@ -145,6 +153,8 @@ export class Game extends Phaser.Scene {
             this.score = 0; // Reset puntuació
             this.updateScore(0); // Update puntuació
             this.titleimage.setVisible(false);
+            this.tutorialimg.setVisible(false);
+            this.scoreText.setVisible(true);
             this.startGame();
             
         });
@@ -252,15 +262,15 @@ export class Game extends Phaser.Scene {
             {
                 delay: randomInterval,
                 callback: this.addEnemy,
-                args: [randomId, randomPath, randomSpeed, randomPower], // parameters passed to addEnemy()
+                args: [randomId, randomPath, randomSpeed, randomPower,this.player], // parameters passed to addEnemy()
                 callbackScope: this,
                 repeat: randomCount
             }
         );
     }
 
-    addEnemy(shipId, pathId, speed, power) {
-        const enemy = new EnemyFlying(this, shipId, pathId, speed, power);
+    addEnemy(shipId, pathId, speed, power,player) {
+        const enemy = new EnemyFlying(this, shipId, pathId, speed, power,player);
         this.enemyGroup.add(enemy);
     }
 
