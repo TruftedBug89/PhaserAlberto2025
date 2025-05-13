@@ -5,18 +5,18 @@
 Un joc utilitzant Phaser, ha de ser de tipus plataformes o de supervivència de l’estil Super Mario Bros o horda d’enemics.
 
 ### Pantalles del joc:
-- Pantalla Inicial per començar el joc.
-- Primer món. 
+- Pantalla Inicial per començar el joc.✅
+- Primer món. ✅
 - Segon món.
 - Pantalla final amb la puntuació i per retornar a l’inici. ✅
 - Pantalla per quan mors al joc poder retornar a l’inici. ✅
 
 ### Els mons han de tindre:
-- Sistema de vides (el personatge té tres vides inicialment).
+- Sistema de vides (el personatge té tres vides inicialment).✅
 - Sistema de monedes o objectes (el personatge ha poder recollir objectes).
 - Ha d’haver enemics i dificultats al recorregut on puguis morir tipus lara, punxes, etc.
 - El personatge ha de poder disparar o atacar als enemics i matar-los. ✅
-- Música.
+- Música.✅
 - Animacions.
 - Per passar de món ha d’haver un portal/meta al final del recorregut.
 

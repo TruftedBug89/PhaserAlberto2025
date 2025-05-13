@@ -8,7 +8,10 @@ import Player from '../gameObjects/Player.js';
 import PlayerBullet from '../gameObjects/PlayerBullet.js';
 import EnemyFlying from '../gameObjects/EnemyFlying.js';
 import EnemyBullet from '../gameObjects/EnemyBullet.js';
+import Portal from '../gameObjects/Portal.js';
+import Moneda from '../gameObjects/Moneda.js';
 import Explosion from '../gameObjects/Explosion.js';
+
 
 export class Game extends Phaser.Scene {
     constructor() {
@@ -49,6 +52,7 @@ export class Game extends Phaser.Scene {
         this.player.update();
         if (this.spawnEnemyCounter > 0) this.spawnEnemyCounter--;
         else this.addFlyingGroup();
+        this.addMoneda();
     }
 
     initVariables() {
@@ -56,6 +60,7 @@ export class Game extends Phaser.Scene {
         this.hp = 3;
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
+        this.moneda = None;
 
         // list of tile ids in tiles.png
         // items nearer to the beginning of the array have a higher chance of being randomly chosen when using weighted()
@@ -139,6 +144,7 @@ export class Game extends Phaser.Scene {
         this.enemyBulletGroup = this.add.group();
         this.playerBulletGroup = this.add.group();
 
+        this.physics.add.overlap(this.player, this.moneda, this.hitMoneda, null, this);
         this.physics.add.overlap(this.player, this.enemyBulletGroup, this.hitPlayer, null, this);
         this.physics.add.overlap(this.playerBulletGroup, this.enemyGroup, this.hitEnemy, null, this);
         this.physics.add.overlap(this.player, this.enemyGroup, this.hitPlayer, null, this);
@@ -262,6 +268,11 @@ export class Game extends Phaser.Scene {
         this.enemyBulletGroup.add(bullet);
     }
 
+
+    addMoneda(){
+        const moneda = new Moneda(this);
+        this.moneda = moneda;
+    }
     // add a group of flying enemies
     addFlyingGroup() {
         this.spawnEnemyCounter = Phaser.Math.RND.between(5, 8) * 60; // spawn next group after x seconds
@@ -299,7 +310,11 @@ export class Game extends Phaser.Scene {
     addExplosion(x, y) {
         new Explosion(this, x, y);
     }
-
+    hitMoneda(player,obstacle){
+        obstacle.die()
+        this.addExplosion(player.x, player.y);
+        this.score += Game.SCORE_MONEDA
+    }
     hitPlayer(player, obstacle) {
         obstacle.die()
         this.addExplosion(player.x, player.y);
