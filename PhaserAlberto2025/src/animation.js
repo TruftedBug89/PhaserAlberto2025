@@ -8,4 +8,13 @@ export default {
         frameRate: 10,
         config: { start: 4, end: 8 },
     },
+    // animacio nova de la moneda
+    moneda: {
+        key: 'moneda',
+        texture: ASSETS.spritesheet.moneda.key,
+        frameRate: 12,         // velocitat d’animació
+        config: { start: 2,    // saltem els dos primers (text “PIXEL COIN”)
+                end: 31 },    // fins a l’últim fotograma
+        repeat: -1             // bucle infinit
+    },
 };

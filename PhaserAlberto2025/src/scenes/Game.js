@@ -60,7 +60,7 @@ export class Game extends Phaser.Scene {
         this.hp = 3;
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
-        this.moneda = None;
+        this.moneda = null;
 
         // list of tile ids in tiles.png
         // items nearer to the beginning of the array have a higher chance of being randomly chosen when using weighted()
@@ -137,6 +137,15 @@ export class Game extends Phaser.Scene {
             frameRate: ANIMATION.explosion.frameRate,
             repeat: ANIMATION.explosion.repeat
         });
+        this.anims.create({
+            key: ANIMATION.moneda.key,
+            frames: this.anims.generateFrameNumbers(
+                ANIMATION.moneda.texture,
+                ANIMATION.moneda.config
+            ),
+            frameRate: ANIMATION.moneda.frameRate,
+            repeat: ANIMATION.moneda.repeat
+            });
     }
 
     initPhysics() {
@@ -269,9 +278,10 @@ export class Game extends Phaser.Scene {
     }
 
 
-    addMoneda(){
-        const moneda = new Moneda(this);
-        this.moneda = moneda;
+    addMoneda() {
+        // nomes una
+        if (this.moneda && this.moneda.active) return;
+        this.moneda = new Moneda(this);
     }
     // add a group of flying enemies
     addFlyingGroup() {

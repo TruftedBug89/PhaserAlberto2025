@@ -26,5 +26,12 @@ export default {
                 frameHeight: 32
             }]
         },
+        moneda: {
+            key: 'moneda',
+            args: ['assets/moneda.png', {
+                frameWidth: 75,   // 600px ÷ 8 columnes
+                frameHeight: 98   // 296px ÷ 3 files
+            }]
+        },
     }
 };
