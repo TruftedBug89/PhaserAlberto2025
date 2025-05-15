@@ -14,6 +14,7 @@ import Explosion from '../gameObjects/Explosion.js';
 
 
 export class Game extends Phaser.Scene {
+    static NEXT_LEVEL_POINTS = 2000;
     constructor() {
         super('Game');
     }
@@ -39,8 +40,8 @@ export class Game extends Phaser.Scene {
             volume: 0.5,  // adjust volume 0 to 1
             loop: true    // loop music
         });
-
-         this.bgMusic.play();
+        this.addMoneda(1);
+        this.bgMusic.play();
     }
 
     update() {
@@ -52,7 +53,7 @@ export class Game extends Phaser.Scene {
         this.player.update();
         if (this.spawnEnemyCounter > 0) this.spawnEnemyCounter--;
         else this.addFlyingGroup();
-        this.addMoneda();
+        
     }
 
     initVariables() {
@@ -61,6 +62,7 @@ export class Game extends Phaser.Scene {
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
         this.moneda = null;
+        this.portal = null;
 
         // list of tile ids in tiles.png
         // items nearer to the beginning of the array have a higher chance of being randomly chosen when using weighted()
@@ -149,11 +151,14 @@ export class Game extends Phaser.Scene {
     }
 
     initPhysics() {
+        this.portals = this.add.group();
+        this.monedes = this.add.group();
         this.enemyGroup = this.add.group();
         this.enemyBulletGroup = this.add.group();
         this.playerBulletGroup = this.add.group();
 
-        this.physics.add.overlap(this.player, this.moneda, this.hitMoneda, null, this);
+        this.physics.add.overlap(this.player, this.portals, this.hitPortal, null, this);
+        this.physics.add.overlap(this.player, this.monedes, this.hitMoneda, null, this);
         this.physics.add.overlap(this.player, this.enemyBulletGroup, this.hitPlayer, null, this);
         this.physics.add.overlap(this.playerBulletGroup, this.enemyGroup, this.hitEnemy, null, this);
         this.physics.add.overlap(this.player, this.enemyGroup, this.hitPlayer, null, this);
@@ -277,11 +282,21 @@ export class Game extends Phaser.Scene {
         this.enemyBulletGroup.add(bullet);
     }
 
-
-    addMoneda() {
+    addPortal(){
+        // nomes un
+        if (this.portal && this.portal.active) return;
+        const maxX = this.scale.width-50;   // amplada viewport
+        const maxY = this.scale.height-50;  // altura viewport
+        this.portal = new Portal(this,Phaser.Math.Between(0, maxX+10),Phaser.Math.Between(0, maxY+10));
+        this.portals.add(this.portal);
+    }
+    addMoneda(score) {
         // nomes una
         if (this.moneda && this.moneda.active) return;
-        this.moneda = new Moneda(this);
+            const maxX = this.scale.width-50;   // amplada viewport
+            const maxY = this.scale.height-50;  // altura viewport
+        this.moneda = new Moneda(this,Phaser.Math.Between(0, maxX+10),Phaser.Math.Between(0, maxY+10),score);
+        this.monedes.add(this.moneda);
     }
     // add a group of flying enemies
     addFlyingGroup() {
@@ -320,10 +335,16 @@ export class Game extends Phaser.Scene {
     addExplosion(x, y) {
         new Explosion(this, x, y);
     }
-    hitMoneda(player,obstacle){
-        obstacle.die()
-        this.addExplosion(player.x, player.y);
-        this.score += Game.SCORE_MONEDA
+    hitPortal(player,obstacle){
+        this.addExplosion(this.x, this.y);
+        console.log("portal hit");
+    }
+    hitMoneda(player,obstacle){ 
+        this.addExplosion(this.x, this.y);
+        this.monedes.remove(obstacle, true, true);
+        this.addMoneda(obstacle.score/50+1)
+        this.updateScore(obstacle.score)
+        console.log("hitted" + obstacle.score);
     }
     hitPlayer(player, obstacle) {
         obstacle.die()
@@ -335,6 +356,8 @@ export class Game extends Phaser.Scene {
         if (this.hp > 1){
             this.hp--;
             this.updateLives()
+            this.monedes.remove(this.moneda, true, true);
+            this.addMoneda(1)
         }
         else{
             player.hit(obstacle.getPower());
@@ -353,6 +376,10 @@ export class Game extends Phaser.Scene {
     updateScore(points) {
         this.score += points;
         this.scoreText.setText(`Puntuació: ${this.score}/1000`);
+        if (this.score > Game.NEXT_LEVEL_POINTS){
+            this.addPortal();
+        }
+
     }
     updateLives() {
           this.livesText.setText("❤️".repeat(this.hp));

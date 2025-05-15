@@ -29,8 +29,8 @@ export default {
         moneda: {
             key: 'moneda',
             args: ['assets/moneda.png', {
-                frameWidth: 75,   // 600px ÷ 8 columnes
-                frameHeight: 98   // 296px ÷ 3 files
+                frameWidth: 100,   // 567 ÷ 8 columnes
+                frameHeight: 100   // 271px ÷ 3 files
             }]
         },
     }
