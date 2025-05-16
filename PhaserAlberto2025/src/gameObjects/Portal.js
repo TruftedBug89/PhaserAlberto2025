@@ -1,14 +1,11 @@
 import ASSETS from '../assets.js';
-import ANIMATION from '../animation.js';
 
-export default class Moneda extends Phaser.Physics.Arcade.Sprite {
-  preload(){
-    this.load.image('portalgif', 'assets/portal.gif');
-  }
-  constructor(scene,x,y) {
+export default class Portal extends Phaser.Physics.Arcade.Sprite {
+
+  constructor(scene,x,y,img) {
     
 
-    super(scene, x, y, , 2);
+    super(scene, x, y,img);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);

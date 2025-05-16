@@ -15,16 +15,15 @@ import Explosion from '../gameObjects/Explosion.js';
 
 export class Game extends Phaser.Scene {
     static NEXT_LEVEL_POINTS = 2000;
+    static END_GAME_POINTS = 10000;
     constructor() {
         super('Game');
-    }
-    init(data){
-        //fer que si la puntuació es x anar al segon mon TODO
     }
     preload(){
         this.load.image('titleimg', 'assets/titleimg.png');
         this.load.image('background', 'assets/startbg.png');
         this.load.image('tutorialimg','assets/tutorialimg.png');
+        this.load.image('portalgif', 'assets/portal.gif');
         this.load.audio('audiobg','assets/music.mp3')
     
     }
@@ -36,6 +35,7 @@ export class Game extends Phaser.Scene {
         this.initInput();
         this.initPhysics();
         this.initMap();
+        this.initLevelTwo();
         this.bgMusic = this.sound.add('audiobg', {
             volume: 0.5,  // adjust volume 0 to 1
             loop: true    // loop music
@@ -57,12 +57,14 @@ export class Game extends Phaser.Scene {
     }
 
     initVariables() {
+        this.level1score = 0;
+        this.level = 1;
         this.score = 0;
-        this.hp = 3;
+        this.updateLives(3);
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
-        this.moneda = null;
-        this.portal = null;
+        this.moneda;
+        this.portal;
 
         // list of tile ids in tiles.png
         // items nearer to the beginning of the array have a higher chance of being randomly chosen when using weighted()
@@ -167,7 +169,38 @@ export class Game extends Phaser.Scene {
     initPlayer() {
         this.player = new Player(this, this.centreX, this.scale.height/2, 8);
     }
+    initLevelTwo() {
+        const mapData = [];
 
+        for (let y = 0; y < this.mapHeight; y++) {
+            const row = [];
+
+            for (let x = 0; x < this.mapWidth; x++) {
+                // randomly choose a tile id from this.tiles
+                // weightedPick favours items earlier in the array
+                const tileIndex = Phaser.Math.RND.weightedPick(this.tiles);
+
+                row.push(tileIndex);
+            }
+
+            mapData.push(row);
+        }
+        this.map = this.make.tilemap({ data: mapData, tileWidth: this.tileSize, tileHeight: this.tileSize });
+        const tileset = this.map.addTilesetImage(ASSETS.spritesheet.tiles2.key);
+        this.groundLayer = this.map.createLayer(0, tileset, 0, this.mapTop);
+
+        //reset a nivell 2
+        this.removeEnemyAll()
+        this.player.x = this.centreX;
+        this.player.y = this.scale.height/2;
+        this.updateLives(5);
+        this.level = 2;
+        this.level1score = this.score;
+        this.updateScore(0);
+        this.monedes.remove(this.moneda, true, true);
+        this.addMoneda(1)
+
+    }
     initInput() {
         this.cursors = this.input.keyboard.addKeys({
             up: Phaser.Input.Keyboard.KeyCodes.UP,
@@ -287,14 +320,14 @@ export class Game extends Phaser.Scene {
         if (this.portal && this.portal.active) return;
         const maxX = this.scale.width-50;   // amplada viewport
         const maxY = this.scale.height-50;  // altura viewport
-        this.portal = new Portal(this,Phaser.Math.Between(0, maxX+10),Phaser.Math.Between(0, maxY+10));
+        this.portal = new Portal(this,Phaser.Math.Between(0, maxX+30),Phaser.Math.Between(0, maxY+30),'portalgif');
         this.portals.add(this.portal);
     }
     addMoneda(score) {
         // nomes una
         if (this.moneda && this.moneda.active) return;
-            const maxX = this.scale.width-50;   // amplada viewport
-            const maxY = this.scale.height-50;  // altura viewport
+        const maxX = this.scale.width-50;   // amplada viewport
+        const maxY = this.scale.height-50;  // altura viewport
         this.moneda = new Moneda(this,Phaser.Math.Between(0, maxX+10),Phaser.Math.Between(0, maxY+10),score);
         this.monedes.add(this.moneda);
     }
@@ -337,7 +370,12 @@ export class Game extends Phaser.Scene {
     }
     hitPortal(player,obstacle){
         this.addExplosion(this.x, this.y);
-        console.log("portal hit");
+        if (this.level == 2){
+            this.GameOver("GG! Victoria!");
+        }else{
+             initLevelTwo();
+        }
+       
     }
     hitMoneda(player,obstacle){ 
         this.addExplosion(this.x, this.y);
@@ -354,15 +392,14 @@ export class Game extends Phaser.Scene {
         this.player.y = this.scale.height/2;
         //fem que les vides reseteen la partida
         if (this.hp > 1){
-            this.hp--;
-            this.updateLives()
+            this.updateLives(this.hp--;)
             this.monedes.remove(this.moneda, true, true);
             this.addMoneda(1)
         }
         else{
             player.hit(obstacle.getPower());
             this.bgMusic.stop();
-            this.GameOver();
+            this.GameOver("Has mort");
         }
         
     }
@@ -376,13 +413,16 @@ export class Game extends Phaser.Scene {
     updateScore(points) {
         this.score += points;
         this.scoreText.setText(`Puntuació: ${this.score}/1000`);
-        if (this.score > Game.NEXT_LEVEL_POINTS){
+        if (this.score > Game.NEXT_LEVEL_POINTS && this.level == 1){
+            this.addPortal();
+        }else if(this.score > Game.END_GAME_POINTS && this.level == 2){
             this.addPortal();
         }
 
     }
-    updateLives() {
-          this.livesText.setText("❤️".repeat(this.hp));
+    updateLives(hp) {
+        this.hp = hp;
+        this.livesText.setText("❤️".repeat(this.hp));
     }
 
     GameOver() {

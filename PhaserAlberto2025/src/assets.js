@@ -26,6 +26,13 @@ export default {
                 frameHeight: 32
             }]
         },
+        tiles2: {
+            key: 'tiles2',
+            args: ['assets/tiles2.png', {
+                frameWidth: 32,
+                frameHeight: 32
+            }]
+        },
         moneda: {
             key: 'moneda',
             args: ['assets/moneda.png', {
