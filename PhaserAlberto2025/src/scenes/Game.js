@@ -202,6 +202,7 @@ export class Game extends Phaser.Scene {
         this.updateLives(5);
         this.level = 2;
         this.level1score = this.score;
+        this.score = 0; 
         this.updateScore(0);
         this.monedes.remove(this.moneda, true, true);
         this.addMoneda(1)
@@ -384,6 +385,7 @@ export class Game extends Phaser.Scene {
     hitPortal(player,obstacle){
         this.addExplosion(this.x, this.y);
         if (this.level == 2){
+
             this.GameOver("GG! Victoria!");
         }else{
              this.initLevelTwo();
@@ -400,6 +402,7 @@ export class Game extends Phaser.Scene {
         this.addPunxa();
         }else{
             this.bgMusic.stop();
+
             this.GameOver("Has mort");
         }
         

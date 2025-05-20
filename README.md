@@ -14,14 +14,14 @@ Un joc utilitzant Phaser, ha de ser de tipus plataformes o de supervivència de 
 ### Els mons han de tindre:
 - Sistema de vides (el personatge té tres vides inicialment).✅
 - Sistema de monedes o objectes (el personatge ha poder recollir objectes).✅
-- Ha d’haver enemics i dificultats al recorregut on puguis morir tipus lara, punxes, etc.
+- Ha d’haver enemics i dificultats al recorregut on puguis morir tipus lara, punxes, etc.✅
 - El personatge ha de poder disparar o atacar als enemics i matar-los. ✅
 - Música.✅
 - Animacions.✅
 - Per passar de món ha d’haver un portal/meta al final del recorregut.✅
 
 ### S’ha de pujar a explotació a triar entre:
-- Netlify
+- Netlify✅
 - OnRender
 
 ## La documentació ha de tindre:
