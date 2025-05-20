@@ -9,13 +9,14 @@ import PlayerBullet from '../gameObjects/PlayerBullet.js';
 import EnemyFlying from '../gameObjects/EnemyFlying.js';
 import EnemyBullet from '../gameObjects/EnemyBullet.js';
 import Portal from '../gameObjects/Portal.js';
+import Punxa from '../gameObjects/Punxa.js';
 import Moneda from '../gameObjects/Moneda.js';
 import Explosion from '../gameObjects/Explosion.js';
 
 
 export class Game extends Phaser.Scene {
-    static NEXT_LEVEL_POINTS = 2000;
-    static END_GAME_POINTS = 10000;
+    static NEXT_LEVEL_POINTS = 2000;//2k
+    static END_GAME_POINTS = 10000;//10k
     constructor() {
         super('Game');
     }
@@ -24,23 +25,25 @@ export class Game extends Phaser.Scene {
         this.load.image('background', 'assets/startbg.png');
         this.load.image('tutorialimg','assets/tutorialimg.png');
         this.load.image('portalgif', 'assets/portal.gif');
+        this.load.image('punxa','assets/punxa.png')
         this.load.audio('audiobg','assets/music.mp3')
     
     }
     create() {
         this.initVariables();
         this.initGameUi();
+        this.updateLives(3);
         this.initAnimations();
         this.initPlayer();
         this.initInput();
         this.initPhysics();
         this.initMap();
-        this.initLevelTwo();
         this.bgMusic = this.sound.add('audiobg', {
             volume: 0.5,  // adjust volume 0 to 1
             loop: true    // loop music
         });
         this.addMoneda(1);
+        this.addPunxa();
         this.bgMusic.play();
     }
 
@@ -60,10 +63,11 @@ export class Game extends Phaser.Scene {
         this.level1score = 0;
         this.level = 1;
         this.score = 0;
-        this.updateLives(3);
+        
         this.centreX = this.scale.width * 0.5;
         this.centreY = this.scale.height * 0.5;
         this.moneda;
+        this.punxa;
         this.portal;
 
         // list of tile ids in tiles.png
@@ -154,12 +158,14 @@ export class Game extends Phaser.Scene {
 
     initPhysics() {
         this.portals = this.add.group();
+        this.punxes = this.add.group();
         this.monedes = this.add.group();
         this.enemyGroup = this.add.group();
         this.enemyBulletGroup = this.add.group();
         this.playerBulletGroup = this.add.group();
 
         this.physics.add.overlap(this.player, this.portals, this.hitPortal, null, this);
+        this.physics.add.overlap(this.player,this.punxes,this.hitPunxa,null,this);
         this.physics.add.overlap(this.player, this.monedes, this.hitMoneda, null, this);
         this.physics.add.overlap(this.player, this.enemyBulletGroup, this.hitPlayer, null, this);
         this.physics.add.overlap(this.playerBulletGroup, this.enemyGroup, this.hitEnemy, null, this);
@@ -323,8 +329,15 @@ export class Game extends Phaser.Scene {
         this.portal = new Portal(this,Phaser.Math.Between(0, maxX+30),Phaser.Math.Between(0, maxY+30),'portalgif');
         this.portals.add(this.portal);
     }
+    addPunxa(){
+        if (this.punxa && this.punxa.active) return;
+        const maxX = this.scale.width-50;   // amplada viewport
+        const maxY = this.scale.height-50;  // altura viewport
+        this.punxa = new Punxa(this,Phaser.Math.Between(0, maxX+30),Phaser.Math.Between(0, maxY+30),'punxa');
+        this.punxes.add(this.punxa);
+    }
     addMoneda(score) {
-        // nomes una
+          // nomes una
         if (this.moneda && this.moneda.active) return;
         const maxX = this.scale.width-50;   // amplada viewport
         const maxY = this.scale.height-50;  // altura viewport
@@ -373,17 +386,31 @@ export class Game extends Phaser.Scene {
         if (this.level == 2){
             this.GameOver("GG! Victoria!");
         }else{
-             initLevelTwo();
+             this.initLevelTwo();
         }
+        this.portals.remove(obstacle, true, true);
        
+    }
+    hitPunxa(player,obstacle){
+        this.addExplosion(this.x, this.y);
+        if (this.hp > 1){
+            this.hp--;
+            this.updateLives(this.hp);
+            this.punxes.remove(obstacle, true, true);
+        this.addPunxa();
+        }else{
+            this.bgMusic.stop();
+            this.GameOver("Has mort");
+        }
+        
     }
     hitMoneda(player,obstacle){ 
         this.addExplosion(this.x, this.y);
         this.monedes.remove(obstacle, true, true);
         this.addMoneda(obstacle.score/50+1)
         this.updateScore(obstacle.score)
-        console.log("hitted" + obstacle.score);
     }
+
     hitPlayer(player, obstacle) {
         obstacle.die()
         this.addExplosion(player.x, player.y);
@@ -392,9 +419,10 @@ export class Game extends Phaser.Scene {
         this.player.y = this.scale.height/2;
         //fem que les vides reseteen la partida
         if (this.hp > 1){
-            this.updateLives(this.hp--;)
+            this.hp--;
+            this.updateLives(this.hp);
             this.monedes.remove(this.moneda, true, true);
-            this.addMoneda(1)
+            this.addMoneda(1);
         }
         else{
             player.hit(obstacle.getPower());
@@ -412,7 +440,12 @@ export class Game extends Phaser.Scene {
 
     updateScore(points) {
         this.score += points;
-        this.scoreText.setText(`Puntuació: ${this.score}/1000`);
+        if (this.level == 1){
+            this.scoreText.setText(`Puntuació: ${this.score}/${Game.NEXT_LEVEL_POINTS}`);
+        }else{
+            this.scoreText.setText(`Puntuació: ${this.score}/${Game.END_GAME_POINTS}`);
+        }
+
         if (this.score > Game.NEXT_LEVEL_POINTS && this.level == 1){
             this.addPortal();
         }else if(this.score > Game.END_GAME_POINTS && this.level == 2){
@@ -422,11 +455,11 @@ export class Game extends Phaser.Scene {
     }
     updateLives(hp) {
         this.hp = hp;
-        this.livesText.setText("❤️".repeat(this.hp));
+        this.livesText.setText("❤️".repeat(this.hp));//Uncaught TypeError: Cannot read properties of undefined (reading 'setText')
     }
 
-    GameOver() {
+    GameOver(reason) {
         this.gameStarted = false;
-        this.scene.start('GameOver', { score: this.score }); // Add this line
+        this.scene.start('GameOver', { score: this.score, level1score: this.level1score, reason: reason}); // Add this line
     }
 }
