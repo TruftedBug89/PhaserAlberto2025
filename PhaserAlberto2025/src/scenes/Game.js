@@ -15,8 +15,8 @@ import Explosion from '../gameObjects/Explosion.js';
 
 
 export class Game extends Phaser.Scene {
-    static NEXT_LEVEL_POINTS = 2000;//2k
-    static END_GAME_POINTS = 10000;//10k
+    static NEXT_LEVEL_POINTS = 2000;
+    static END_GAME_POINTS = 6000;
     constructor() {
         super('Game');
     }
@@ -290,15 +290,7 @@ export class Game extends Phaser.Scene {
     }
 
     startGame() {
-        // Optional: Reset player state (e.g., health, position) if you have a method for it
-        // if (this.player && typeof this.player.resetState === 'function') {
-        //     this.player.resetState();
-        // }
 
-        // Optional: Clear existing enemies and bullets if restarting
-        // if (this.enemyGroup) this.enemyGroup.clear(true, true);
-        // if (this.enemyBulletGroup) this.enemyBulletGroup.clear(true, true);
-        // if (this.playerBulletGroup) this.playerBulletGroup.clear(true, true);
 
         this.gameStarted = true;
         this.tutorialText.setVisible(false);
@@ -317,10 +309,6 @@ export class Game extends Phaser.Scene {
         this.playerBulletGroup.remove(bullet, true, true);
     }
 
-    fireEnemyBullet(x, y, power) {
-        const bullet = new EnemyBullet(this, x, y, power);
-        this.enemyBulletGroup.add(bullet);
-    }
 
     addPortal(){
         // nomes un
@@ -444,14 +432,17 @@ export class Game extends Phaser.Scene {
     updateScore(points) {
         this.score += points;
         if (this.level == 1){
+
             this.scoreText.setText(`Puntuació: ${this.score}/${Game.NEXT_LEVEL_POINTS}`);
         }else{
             this.scoreText.setText(`Puntuació: ${this.score}/${Game.END_GAME_POINTS}`);
         }
 
         if (this.score > Game.NEXT_LEVEL_POINTS && this.level == 1){
+            this.score -= points;
             this.addPortal();
         }else if(this.score > Game.END_GAME_POINTS && this.level == 2){
+            this.score -= points;    
             this.addPortal();
         }
 

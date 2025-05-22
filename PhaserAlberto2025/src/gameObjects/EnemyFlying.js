@@ -100,11 +100,6 @@ export default class EnemyFlying extends Phaser.Physics.Arcade.Sprite {
         this.scene.removeEnemy(this);
     }
 
-    fire() {
-        this.fireCounter = Phaser.Math.RND.between(this.fireCounterMin, this.fireCounterMax);
-        this.scene.fireEnemyBullet(this.x, this.y, this.power);
-    }
-
     initPath(pathId, speed) {
         const points = this.paths[pathId];
 
