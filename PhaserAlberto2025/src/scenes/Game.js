@@ -7,7 +7,6 @@ import ANIMATION from '../animation.js';
 import Player from '../gameObjects/Player.js';
 import PlayerBullet from '../gameObjects/PlayerBullet.js';
 import EnemyFlying from '../gameObjects/EnemyFlying.js';
-import EnemyBullet from '../gameObjects/EnemyBullet.js';
 import Portal from '../gameObjects/Portal.js';
 import Punxa from '../gameObjects/Punxa.js';
 import Moneda from '../gameObjects/Moneda.js';
