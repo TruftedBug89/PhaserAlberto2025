@@ -91,7 +91,7 @@ export class Game extends Phaser.Scene {
         this.background1 = this.add.image(0, 0, 'background').setOrigin(0).setDepth(100).setScale(1.5);
 
         // Create tutorial text
-        this.tutorialText = this.add.text(this.centreX, this.centreY+200, 'Apreta espai per començar!', {
+        this.tutorialText = this.add.text(this.centreX, this.centreY+200, 'Prem espai per començar!', {
             fontFamily: 'Arial Black', fontSize: 42, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
